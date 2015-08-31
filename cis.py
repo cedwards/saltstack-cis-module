@@ -17,7 +17,11 @@ GREP = utils.which('egrep')
 STAT = utils.which('stat')
 SYSCTL = utils.which('sysctl')
 RPMQUERY = utils.which('rpm')
-CHKCONFIG = utils.which('chkconfig')
+
+if utils.which('chkconfig'):
+    CHKCONFIG = utils.which('chkconfig')
+if utils.which('systemctl'):
+    CHKCONFIG = utils.which('systemctl')
 
 CIS = {}
 CIS['Passed'] = []
@@ -61,7 +65,10 @@ def _rpmquery(package):
 
 
 def _chkconfig(service):
-    cmd = '{0} {1} {2}'.format(CHKCONFIG, '--list', service)
+    if 'systemctl' in CHKCONFIG:
+        cmd = '{0} {1} {2}'.format(CHKCONFIG, 'is-enabled', service)
+    elif 'chkconfig' in CHKCONFIG:
+        cmd = '{0} {1} {2}'.format(CHKCONFIG, '--list', service)
     return __salt__['cmd.run'](cmd, python_shell=False)
 
 
@@ -950,8 +957,12 @@ def audit_2_1_12():
     benchmark = '2.1.12 Disable chargen-dgram (Scored)'
 
     ret = _chkconfig('chargen-dgram')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -970,8 +981,12 @@ def audit_2_1_13():
     benchmark = '2.1.13 Disable chargen-stream (Scored)'
 
     ret = _chkconfig('chargen-stream')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -990,8 +1005,12 @@ def audit_2_1_14():
     benchmark = '2.1.14 Disable daytime-dgram (Scored)'
 
     ret = _chkconfig('daytime-dgram')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1010,8 +1029,12 @@ def audit_2_1_15():
     benchmark = '2.1.15 Disable daytime-stream (Scored)'
 
     ret = _chkconfig('daytime-stream')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1030,8 +1053,12 @@ def audit_2_1_16():
     benchmark = '2.1.16 Disable echo-dgram (Scored)'
 
     ret = _chkconfig('echo-dgram')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1050,8 +1077,12 @@ def audit_2_1_17():
     benchmark = '2.1.17 Disable echo-stream (Scored)'
 
     ret = _chkconfig('echo-stream')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1072,8 +1103,12 @@ def audit_2_1_18():
     benchmark = '2.1.18 Disable tcpmux-server (Scored)'
 
     ret = _chkconfig('tcpmux-server')
-    if 'off' in ret:
+    if 'No such file or directory' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'off' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1168,8 +1203,10 @@ def audit_3_3():
         CIS['Passed'].append(benchmark)
     elif 'on' in ret:
         CIS['Failed'].append(benchmark)
+    elif 'enabled' in ret:
+        CIS['Failed'].append(benchmark)
     else:
-        CIS['Passed'].append(benchmark)
+        CIS['Failed'].append(benchmark)
     return CIS
 
 
@@ -1494,10 +1531,16 @@ def audit_4_7():
 
         salt '*' cis.audit_4_5_7
     '''
-    benchmark = '4.7 Enable iptables (Scored)'
+    benchmark = '4.7 Enable iptables / firewalld (Scored)'
 
-    ret = _chkconfig('iptables')
+    if 'systemctl' in CHKCONFIG:
+        ret = _chkconfig('firewalld')
+    if 'chkconfig' in CHKCONFIG:
+        ret = _chkconfig('iptables')
+
     if '3:on' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
         CIS['Passed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
@@ -1542,6 +1585,8 @@ def audit_5_1_2():
 
     ret = _chkconfig('rsyslog')
     if '3:on' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
         CIS['Passed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
@@ -1609,6 +1654,8 @@ def audit_6_1_2():
 
     ret = _chkconfig('crond')
     if '3:on' in ret:
+        CIS['Passed'].append(benchmark)
+    elif 'enabled' in ret:
         CIS['Passed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
