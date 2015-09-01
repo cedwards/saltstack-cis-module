@@ -8,7 +8,7 @@ This module was designed to help facilitate compliance with the CIS standard.
 :depends: none
 :platform: centos 6/7
 
-Currently this module supports only CentOS 6 / 7.
+Currently this module supports CentOS 6 / 7, and only validates "Level 1 (Scored)" items.
 
 Installation
 ------------
