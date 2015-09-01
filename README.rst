@@ -1,15 +1,24 @@
 CIS compliance module
 =====================
 
-This module was designed to help facilitate compliance with the CIS standard. This document can be found at:
-http://benchmarks.cisecurity.org/
+This module was designed to help facilitate compliance with the CIS standard.
 
 :maintainer: Christer Edwards (cedwards@adobe.com)
-:maturity: 20150729
+:maturity: 20150901
 :depends: none
-:platform: centos 6.x
+:platform: centos 6/7
 
-Currently this module supports only CentOS 6.
+Currently this module supports only CentOS 6 / 7.
+
+Installation
+------------
+
+Place the `cis.py` module file into your `states/_modules` directory and sync
+the module to the required minions.
+
+.. code-block:: shell
+
+    salt '*' saltutil.sync_modules
 
 Usage
 -----
