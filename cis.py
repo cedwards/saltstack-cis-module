@@ -1542,6 +1542,8 @@ def audit_4_7():
         CIS['Passed'].append(benchmark)
     elif 'enabled' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'No such file or directory' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1588,6 +1590,8 @@ def audit_5_1_2():
         CIS['Passed'].append(benchmark)
     elif 'enabled' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'No such file or directory' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -1657,6 +1661,8 @@ def audit_6_1_2():
         CIS['Passed'].append(benchmark)
     elif 'enabled' in ret:
         CIS['Passed'].append(benchmark)
+    elif 'No such file or directory' in ret:
+        CIS['Failed'].append(benchmark)
     else:
         CIS['Failed'].append(benchmark)
     return CIS
@@ -2280,7 +2286,7 @@ def audit_6_3_4():
     '''
     Forcing users not to reuse their past 5 passwords make it less likely that
     an attacker will be able to guess the password.  Note that these change only
-    apply to accounts configured on the local system
+    apply to accounts configured on the local system.
 
     CLI Example:
 
@@ -2778,8 +2784,8 @@ def audit_9_2_1():
     '''
     benchmark = '9.2.1 Ensure password fields are not emply (Scored)'
 
-    cmd = "/bin/cat /etc/shadow | /bin/awk -F: '($2 == \"\" ) { print $1 \" does not have a password \"}'"
-    ret = __salt__['cmd.run'](cmd, python_shell=True)
+    cmd = "/bin/awk -F: '($2 == \"\" ) { print $1 \" does not have a password \"}' /etc/shadow"
+    ret = __salt__['cmd.run'](cmd, python_shell=False)
     if not ret:
         CIS['Passed'].append(benchmark)
     else:
@@ -2865,12 +2871,12 @@ def audit_9_2_5():
     '''
     benchmark = '9.2.5 Verify No UID 0 Accounts Exist Other Than root (Scored)'
 
-    cmd = "/bin/cat /etc/passwd | /bin/awk -F: '($3 == 0) { print $1 }'"
-    ret = __salt__['cmd.run'](cmd, python_shell=True)
-    if 'root' in ret:
-        CIS['Passed'].append(benchmark)
-    else:
+    cmd = "/bin/awk -F: '($3 == 0) { print $1 }' /etc/passwd"
+    ret = __salt__['cmd.run'](cmd, python_shell=False)
+    if not 'root' in ret:
         CIS['Failed'].append(benchmark)
+    else:
+        CIS['Passed'].append(benchmark)
     return CIS
 
 
