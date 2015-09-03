@@ -477,7 +477,7 @@ def audit_1_5_1():
     benchmark = '1.5.1 Set user/group owner on /etc/grub.conf (Scored)'
 
     if 'systemctl' in CHKCONFIG:
-        ret = _stat('/boot/grub/grub.cfg')
+        ret = _stat('/boot/grub2/grub.cfg')
     elif 'chkconfig' in CHKCONFIG:
         ret = _stat('/etc/grub.conf')
 
@@ -504,7 +504,7 @@ def audit_1_5_2():
     benchmark = '1.5.2 Set permissions on /etc/grub.conf (Scored)'
 
     if 'systemctl' in CHKCONFIG:
-        ret = _stat('/boot/grub/grub.cfg')
+        ret = _stat('/boot/grub2/grub.cfg')
     elif 'chkconfig' in CHKCONFIG:
         ret = _stat('/etc/grub.conf')
 
@@ -531,7 +531,7 @@ def audit_1_5_3():
     benchmark = '1.5.3 Set boot loader password (Scored)'
 
     if 'systemctl' in CHKCONFIG:
-        ret = _grep('"^password"', '/boot/grub/grub.cfg')
+        ret = _grep('"^password"', '/boot/grub2/grub.cfg')
     elif 'chkconfig' in CHKCONFIG:
         ret = _grep('"^password"', '/etc/grub.conf')
 
