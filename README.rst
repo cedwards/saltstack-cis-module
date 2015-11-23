@@ -13,7 +13,7 @@ Currently this module supports CentOS 6 / 7, and only validates "Level 1 (Scored
 Installation
 ------------
 
-Place the `cis.py` module file into your `states/_modules` directory and sync
+Place the `cis.py` module file into your ``salt/_modules`` directory and sync
 the module to the required minions.
 
 .. code-block:: shell
