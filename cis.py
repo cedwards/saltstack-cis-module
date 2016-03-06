@@ -2544,8 +2544,8 @@ def audit_8_2():
     benchmark = '8.2 Remove OS Information from login warning banners (Scored)'
 
     ret1 = _grep('"(\\v|\\r|\\m|\\s)"', '/etc/issue')
-    ret1 = _grep('"(\\v|\\r|\\m|\\s)"', '/etc/motd')
-    ret1 = _grep('"(\\v|\\r|\\m|\\s)"', '/etc/issue.net')
+    ret2 = _grep('"(\\v|\\r|\\m|\\s)"', '/etc/motd')
+    ret3 = _grep('"(\\v|\\r|\\m|\\s)"', '/etc/issue.net')
     if not (ret1 or ret2 or ret3):
         CIS['Passed'].append(benchmark)
     else:
